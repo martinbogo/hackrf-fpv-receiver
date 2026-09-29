@@ -25,6 +25,6 @@
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Analog PAL FPV receiver for HackRF One</string>
+	<string>Copyright (c) 2026 Martin Bogomolni. Licensed CC BY-NC 4.0.</string>
 </dict>
 </plist>

@@ -118,6 +118,8 @@ It needs numpy, scipy, pillow and the `hackrf_transfer` command-line tool.
 
 ## License
 
+Copyright (c) 2026 Martin Bogomolni
+
 FPV Receiver is licensed under the
 [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/)
 (CC BY-NC 4.0). You may share and adapt it for non-commercial purposes, with attribution.
