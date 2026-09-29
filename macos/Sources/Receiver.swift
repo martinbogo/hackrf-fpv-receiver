@@ -170,6 +170,8 @@ final class Receiver: ObservableObject {
     @Published var saturation: Double { didSet { defaults.set(saturation, forKey: "saturation"); pushOptions() } }
     @Published var weave: Bool { didSet { defaults.set(weave, forKey: "weave"); pushOptions() } }
     @Published var repairBands: Bool { didSet { defaults.set(repairBands, forKey: "repair"); pushOptions() } }
+    /// "auto", "PAL" or "NTSC"
+    @Published var standardSetting: String { didSet { defaults.set(standardSetting, forKey: "standard"); pushOptions() } }
 
     @Published var image: CGImage?
     @Published var stats = LiveStats()
@@ -193,7 +195,8 @@ final class Receiver: ObservableObject {
 
     private init() {
         defaults.register(defaults: ["channel": 5, "amp": true, "lna": 32, "vga": 30, "autoGain": false,
-                                     "color": true, "saturation": 1.0, "weave": false, "repair": true])
+                                     "color": true, "saturation": 1.0, "weave": false, "repair": true,
+                                     "standard": "auto"])
         channel = defaults.integer(forKey: "channel")
         ampOn = defaults.bool(forKey: "amp")
         lna = defaults.integer(forKey: "lna")
@@ -203,6 +206,7 @@ final class Receiver: ObservableObject {
         saturation = defaults.double(forKey: "saturation")
         weave = defaults.bool(forKey: "weave")
         repairBands = defaults.bool(forKey: "repair")
+        standardSetting = defaults.string(forKey: "standard") ?? "auto"
 
         engine.onFrame = { [weak self] bgra, st, ms in self?.deliver(bgra, st, ms) }
         engine.onHeld = { [weak self] in DispatchQueue.main.async { self?.stats.heldFields += 1 } }
@@ -261,7 +265,8 @@ final class Receiver: ObservableObject {
 
     private func pushOptions() {
         engine.setOptions(DecodeOptions(color: color, saturation: Float(saturation), weave: weave,
-                                        repairBands: repairBands))
+                                        repairBands: repairBands,
+                                        standard: VideoStandard(rawValue: standardSetting)))
     }
 
     // MARK: frames

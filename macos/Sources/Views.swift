@@ -213,10 +213,16 @@ struct InspectorView: View {
                     Text("Bob (smooth motion)").tag(false)
                     Text("Weave (full detail)").tag(true)
                 }
+                Picker("Video standard", selection: $rx.standardSetting) {
+                    Text("Automatic").tag("auto")
+                    ForEach(VideoStandard.allCases) { Text($0.rawValue).tag($0.rawValue) }
+                }
                 Toggle("Repair interference bands", isOn: $rx.repairBands)
             }
 
             Section("Signal") {
+                stat("Standard", rx.hasSignal ? rx.stats.decode.standard
+                     + (rx.standardSetting == "auto" ? " (detected)" : "") : "–")
                 stat("Sync lock", rx.hasSignal ? String(format: "%.0f%%", rx.stats.decode.lock * 100) : "–",
                      tint: !rx.hasSignal ? .secondary : rx.stats.decode.lock > 0.95 ? .green : .orange)
                 stat("Level", String(format: "%.1f dBFS", rx.stats.decode.dbfs),
@@ -279,7 +285,7 @@ struct ScanSheet: View {
             Text("Find VTX").font(.headline)
             switch rx.scan {
             case .scanning(let p):
-                Text("Listening for PAL video on each channel frequency…")
+                Text("Listening for PAL or NTSC video on each channel frequency…")
                 ProgressView(value: p)
                 HStack { Spacer(); Button("Cancel") { dismiss() }.disabled(true) }
             case let .found(n, carrier):
@@ -294,7 +300,7 @@ struct ScanSheet: View {
                         .keyboardShortcut(.defaultAction)
                 }
             default:
-                Text("No PAL video found on any of the \(Channels.count) channels.")
+                Text("No analog video found on any of the \(Channels.count) channels.")
                 Text("Check that the drone is powered and the VTX is not in pit mode, or try enabling the RF amplifier.")
                     .foregroundStyle(.secondary)
                 HStack { Spacer(); Button("OK") { rx.scan = .idle }.keyboardShortcut(.defaultAction) }
